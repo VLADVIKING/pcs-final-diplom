@@ -10,9 +10,8 @@ import java.util.*;
 
 public class BooleanSearchEngine implements SearchEngine {
 
-    PageEntry pageEntry;
     private Map<String, List<PageEntry>> wordUnique = new HashMap<>();
-    private List<String> stopWords = new ArrayList<>();
+    private Set<String> stopWords = new HashSet<>();
 
     public BooleanSearchEngine(File pdfsDir) throws IOException {
 
@@ -34,8 +33,7 @@ public class BooleanSearchEngine implements SearchEngine {
                     if (wordUnique.containsKey(item.getKey())) {
                         List<PageEntry> pageEntries = new ArrayList<>();
                         pageEntries.addAll(wordUnique.get(item.getKey()));
-                        pageEntry = new PageEntry(files[i].getName(), j, item.getValue());
-                        pageEntries.add(pageEntry);
+                        pageEntries.add(new PageEntry(files[i].getName(), j, item.getValue()));
                         Collections.sort(pageEntries, PageEntry::compareTo);
                         wordUnique.replace(item.getKey(), pageEntries);
                         continue;
@@ -55,8 +53,7 @@ public class BooleanSearchEngine implements SearchEngine {
         List<PageEntry> searchResult = new ArrayList<>();
         for (int i = 0; i < words.length; i++) {
             if (!stopWords.contains(words[i].toLowerCase())) {
-                if (!wordUnique.containsKey(words[i].toLowerCase())) {
-                } else {
+                if (wordUnique.containsKey(words[i].toLowerCase())) {
                     searchResult.addAll(wordUnique.get(words[i].toLowerCase()));
                 }
             }
